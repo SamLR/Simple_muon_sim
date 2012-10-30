@@ -54,7 +54,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   private:
     // macro-able settings
     //
-    G4double separation;
     G4double st_x;
     G4Material* st_mat;
     G4String mat_name;

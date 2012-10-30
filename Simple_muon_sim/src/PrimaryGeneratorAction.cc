@@ -34,10 +34,10 @@
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
+#include "Randomize.hh"
 #include "globals.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction()
-{
+PrimaryGeneratorAction::PrimaryGeneratorAction() {
     G4int n_particle = 1;
     G4ParticleGun* fParticleGun = new G4ParticleGun(n_particle);
     G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
@@ -46,17 +46,17 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     fParticleGun->SetParticleDefinition(particle);
     fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1.,0.,0.));
     fParticleGun->SetParticleEnergy(45.*MeV);
-    fParticleGun->SetParticlePosition(G4ThreeVector(-20.*cm,0.*cm,0.*cm));
+    fParticleGun->SetParticlePosition(G4ThreeVector(-20*mm,0.*cm,0.*cm));
     particleGun = fParticleGun;
 }
 
-PrimaryGeneratorAction::~PrimaryGeneratorAction()
-{
+PrimaryGeneratorAction::~PrimaryGeneratorAction() {
     delete particleGun;
 }
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
-{
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
+    G4double momentum = G4RandGauss::shoot(45*MeV, 10*MeV);
+    particleGun->SetParticleMomentum(momentum);
     particleGun->GeneratePrimaryVertex(anEvent);
 }
 

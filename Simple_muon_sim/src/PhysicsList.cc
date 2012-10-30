@@ -57,10 +57,10 @@ PhysicsList::PhysicsList() {
 void PhysicsList::init(){
     this->defaultCutValue = 50*um;
     this->RegisterPhysics(new G4EmStandardPhysics_option3());
-    this->RegisterPhysics(new HadronPhysicsQGSP_BERT_HP());
+//    this->RegisterPhysics(new HadronPhysicsQGSP_BERT_HP());
 //    this->RegisterPhysics(new G4EmExtraPhysics());
     this->RegisterPhysics(new G4DecayPhysics());
-    this->RegisterPhysics(new G4HadronElasticPhysicsHP());
+//    this->RegisterPhysics(new G4HadronElasticPhysicsHP());
     this->RegisterPhysics(new G4QStoppingPhysics());
     this->RegisterPhysics(new G4IonPhysics());
 }

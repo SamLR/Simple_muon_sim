@@ -47,7 +47,7 @@
 #include "globals.hh"
 
 DetectorConstruction::DetectorConstruction()
-    :separation(10*mm), st_x(0.0*mm), st_mat(0), mat_name(""), messenger(0),
+    :st_x(0.0*mm), st_mat(0), mat_name(""), messenger(0),
     expHall_log(0),  scint1_log(0),  scint2_log(0), st_log(0),
     expHall_phys(0), scint1_phys(0), scint2_phys(0), st_phys(0)
 {
@@ -81,9 +81,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
     //------------------------------ experimental hall (world volume)
     //------------------------------ beam line along x axis
     
-    G4double expHall_x = 1.0*m;
-    G4double expHall_y = 1.0*m;
-    G4double expHall_z = 1.0*m;
+    G4double expHall_x = 50*cm;
+    G4double expHall_y = 50*cm;
+    G4double expHall_z = 50*cm;
     G4Box* expHall_box = new G4Box("expHall_box",expHall_x,expHall_y,expHall_z);
     expHall_log = new G4LogicalVolume(expHall_box, Air, "expHall_log");
     expHall_phys = new G4PVPlacement(0,G4ThreeVector(), expHall_log,"expHall",0,false,0);
@@ -92,16 +92,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
     G4double scint_y = 100*mm;
     G4double scint_z = 100*mm;
     G4Box* scint_box = new G4Box("scint_box", scint_x/2, scint_y/2, scint_z/2);
-    
+    G4double separation = 10*mm;
     G4double x_pos = scint_x/2 + separation/2 + st_x/2;
 
-    scint1_log = new G4LogicalVolume(scint_box, Air, "scint1");
+    scint1_log = new G4LogicalVolume(scint_box, Air, "scintD");
     G4ThreeVector scint1_pos(x_pos, 0, 0);
-    scint1_phys = new G4PVPlacement(0, scint1_pos, scint1_log, "scint1_p", expHall_log, false, 0);
+    scint1_phys = new G4PVPlacement(0, scint1_pos, scint1_log, "scintD_p", expHall_log, false, 0);
 
-    scint2_log = new G4LogicalVolume(scint_box, Air, "scint2");
+    scint2_log = new G4LogicalVolume(scint_box, Air, "scintU");
     G4ThreeVector scint2_pos(-x_pos, 0, 0);
-    scint2_phys = new G4PVPlacement(0, scint2_pos, scint2_log, "scint2_p", expHall_log, false, 0);
+    scint2_phys = new G4PVPlacement(0, scint2_pos, scint2_log, "scintU_p", expHall_log, false, 0);
     
     if (st_x > std::numeric_limits<G4double>::epsilon() && mat_name != "") {
         // Check if the value not is (reasonably) equal to zero
@@ -128,6 +128,10 @@ void DetectorConstruction::SetTargetMat(G4String new_material) {
 }
 
 void DetectorConstruction::SetTargetX(G4double thickness) {
+    if (thickness >5.0) {
+        G4cerr << "WARNING: target thickness too large"<<G4endl;
+        exit(1);
+    }
     st_x = thickness;
 }
 

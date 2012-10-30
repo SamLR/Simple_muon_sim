@@ -99,8 +99,8 @@ void SteppingAction::UserSteppingAction(const G4Step * aStep) {
     
     const G4String volname = point1->GetTouchableHandle()->GetVolume()->GetName();
     int acounter = 0;
-    if     ( volname == "scint1_p" ) { acounter = 1; }
-    else if( volname == "scint2_p" ) { acounter = 2; }
+    if     ( volname == "scintD_p" ) { acounter = 1; }
+    else if( volname == "scintU_p" ) { acounter = 2; }
     else return;
     
     G4Track * track = aStep->GetTrack();
