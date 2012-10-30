@@ -143,8 +143,8 @@ void check_args(int argc,char** argv) {
             << "<target_thickness> <target_material> "
             << "<n_initial_particles> <out_root_file> "
             <<G4endl<<G4endl;
-        G4cout <<"<counter separation>: distance between counters in mm; must "
-            << "be larger than target thickness"
+        G4cout <<"<counter separation>: distance between counters in mm; in "
+            << "addition to target thickness"
             <<G4endl;
         G4cout <<"<target_thickness> in mm"
             <<G4endl;

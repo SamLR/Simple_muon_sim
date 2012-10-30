@@ -50,13 +50,7 @@ DetectorConstruction::DetectorConstruction(G4double separation, G4double st_x, G
     :m_separation(separation), m_st_x(st_x*mm), m_st_mat(0), m_mat_name(st_mat),
     m_expHall_log(0),  m_scint1_log(0),  m_scint2_log(0), m_st_log(0),
     m_expHall_phys(0), m_scint1_phys(0), m_scint2_phys(0), m_st_phys(0)
-{
-    if((separation + std::numeric_limits<G4double>::epsilon()) < st_x) {
-        // if separation + smallest double value < target thickness
-        G4cerr << "Separation of counters must be greater than the target thickness"<< G4endl;
-        exit(1);
-    }
-}
+{;}
 
 DetectorConstruction::~DetectorConstruction() {
     delete m_st_log;
@@ -94,7 +88,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
     G4double scint_y = 100*mm;
     G4double scint_z = 100*mm;
     G4Box* scint_box = new G4Box("scint_box", scint_x/2, scint_y/2, scint_z/2);
-    G4double x_pos = scint_x/2 + m_separation/2;
+    G4double x_pos = scint_x/2 + m_separation/2 + m_st_x/2;
 
     m_scint1_log = new G4LogicalVolume(scint_box, Air, "scintD");
     G4ThreeVector scint1_pos(x_pos, 0, 0);
