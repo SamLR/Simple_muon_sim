@@ -31,7 +31,7 @@
 #include <limits>
 
 #include "DetectorConstruction.hh"
-#include "DetectorConstructionMessenger.hh"
+//#include "DetectorConstructionMessenger.hh"
 
 #include "G4NistManager.hh"
 #include "G4Box.hh"
@@ -46,25 +46,26 @@
 #include "G4RunManager.hh"
 #include "globals.hh"
 
-DetectorConstruction::DetectorConstruction()
-    :st_x(0.0*mm), st_mat(0), mat_name(""), messenger(0),
-    expHall_log(0),  scint1_log(0),  scint2_log(0), st_log(0),
-    expHall_phys(0), scint1_phys(0), scint2_phys(0), st_phys(0)
+DetectorConstruction::DetectorConstruction(G4double separation, G4double st_x, G4String st_mat)
+    :m_separation(separation), m_st_x(st_x*mm), m_st_mat(0), m_mat_name(st_mat),
+    m_expHall_log(0),  m_scint1_log(0),  m_scint2_log(0), m_st_log(0),
+    m_expHall_phys(0), m_scint1_phys(0), m_scint2_phys(0), m_st_phys(0)
 {
-    messenger = new DetectorConstructionMessenger(this);
+    if(separation < st_x) {
+        G4cerr << "Separation of counters must be greater than the target thickness"<< G4endl;
+        exit(1);
+    }
 }
 
 DetectorConstruction::~DetectorConstruction() {
-    if (st_log != NULL) {
-        delete st_log;
-        delete st_phys;
-    }
-    delete scint1_phys;
-    delete scint2_phys;
-    delete scint1_log;
-    delete scint2_log;
-    delete expHall_phys;
-    delete expHall_log;
+    delete m_st_log;
+    delete m_st_phys;
+    delete m_scint1_phys;
+    delete m_scint2_phys;
+    delete m_scint1_log;
+    delete m_scint2_log;
+    delete m_expHall_phys;
+    delete m_expHall_log;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
@@ -85,65 +86,35 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
     G4double expHall_y = 50*cm;
     G4double expHall_z = 50*cm;
     G4Box* expHall_box = new G4Box("expHall_box",expHall_x,expHall_y,expHall_z);
-    expHall_log = new G4LogicalVolume(expHall_box, Air, "expHall_log");
-    expHall_phys = new G4PVPlacement(0,G4ThreeVector(), expHall_log,"expHall",0,false,0);
+    m_expHall_log = new G4LogicalVolume(expHall_box, Air, "expHall_log");
+    m_expHall_phys = new G4PVPlacement(0,G4ThreeVector(), m_expHall_log,"expHall",0,false,0);
     
     G4double scint_x = 10*mm;
     G4double scint_y = 100*mm;
     G4double scint_z = 100*mm;
     G4Box* scint_box = new G4Box("scint_box", scint_x/2, scint_y/2, scint_z/2);
-    G4double separation = 10*mm;
-    G4double x_pos = scint_x/2 + separation/2 + st_x/2;
+    G4double x_pos = scint_x/2 + m_separation/2;
 
-    scint1_log = new G4LogicalVolume(scint_box, Air, "scintD");
+    m_scint1_log = new G4LogicalVolume(scint_box, Air, "scintD");
     G4ThreeVector scint1_pos(x_pos, 0, 0);
-    scint1_phys = new G4PVPlacement(0, scint1_pos, scint1_log, "scintD_p", expHall_log, false, 0);
+    m_scint1_phys = new G4PVPlacement(0, scint1_pos, m_scint1_log, "scintD_p", m_expHall_log, false, 0);
 
-    scint2_log = new G4LogicalVolume(scint_box, Air, "scintU");
+    m_scint2_log = new G4LogicalVolume(scint_box, Air, "scintU");
     G4ThreeVector scint2_pos(-x_pos, 0, 0);
-    scint2_phys = new G4PVPlacement(0, scint2_pos, scint2_log, "scintU_p", expHall_log, false, 0);
+    m_scint2_phys = new G4PVPlacement(0, scint2_pos, m_scint2_log, "scintU_p", m_expHall_log, false, 0);
     
-    if (st_x > std::numeric_limits<G4double>::epsilon() && mat_name != "") {
-        // Check if the value not is (reasonably) equal to zero
-        G4Box* st_box = new G4Box("st_box", st_x/2, scint_y/2, scint_z/2);
-        st_mat = material_manager->FindOrBuildMaterial(mat_name);
-        if (!st_mat) {
-            G4cerr << "Material: "<<mat_name<<" not found. Check for it's existance in the Geant4 NIST materials database"<<G4endl;
-            exit(1);
-        }
-        G4ThreeVector st_pos(0.0, 0.0, 0.0);
-        st_log = new G4LogicalVolume(st_box, st_mat, "st");
-        st_phys = new G4PVPlacement(0, st_pos, st_log, "st_p", expHall_log, false, 0);
-    } else {
-        st_mat = NULL;
-        st_log = NULL;
-        st_phys = NULL;
-    }
 
-    return expHall_phys;
-}
-
-void DetectorConstruction::SetTargetMat(G4String new_material) {
-    mat_name = new_material;
-}
-
-void DetectorConstruction::SetTargetX(G4double thickness) {
-    if (thickness >5.0) {
-        G4cerr << "WARNING: target thickness too large"<<G4endl;
+    // Check if the value not is (reasonably) equal to zero
+    G4Box* st_box = new G4Box("st_box", m_st_x/2, scint_y/2, scint_z/2);
+    m_st_mat = material_manager->FindOrBuildMaterial(m_mat_name);
+    if (!m_st_mat) {
+        G4cerr << "Material: "<<m_mat_name<<" not found. Check for it's existance in the Geant4 NIST materials database"<<G4endl;
         exit(1);
     }
-    st_x = thickness;
+    G4ThreeVector st_pos(0.0, 0.0, 0.0);
+    m_st_log = new G4LogicalVolume(st_box, m_st_mat, "st");
+    m_st_phys = new G4PVPlacement(0, st_pos, m_st_log, "st_p", m_expHall_log, false, 0);
+
+    return m_expHall_phys;
 }
 
-void DetectorConstruction::UpdateGeometry() {
-    // clean-up previous geometry
-    G4GeometryManager::GetInstance()->OpenGeometry();
-    
-    G4PhysicalVolumeStore::GetInstance()->Clean();
-    G4LogicalVolumeStore::GetInstance()->Clean();
-    G4SolidStore::GetInstance()->Clean();
-    
-    //define new one
-    G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
-    G4RunManager::GetRunManager()->GeometryHasBeenModified();
-}

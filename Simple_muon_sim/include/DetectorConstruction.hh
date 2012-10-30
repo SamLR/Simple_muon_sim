@@ -42,36 +42,39 @@ class DetectorConstructionMessenger;
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
-    DetectorConstruction();
+    DetectorConstruction(G4double separation, G4double st_x, G4String st_mat);
     ~DetectorConstruction();
 
     G4VPhysicalVolume* Construct();
     
-    void SetTargetX(G4double thickness);
-    void SetTargetMat(G4String new_material);
-    void UpdateGeometry();
+//    void SetTargetX(G4double thickness);
+//    void SetTargetMat(G4String new_material);
+//    void UpdateGeometry();
 
   private:
+    
+    DetectorConstruction();
     // macro-able settings
     //
-    G4double st_x;
-    G4Material* st_mat;
-    G4String mat_name;
-    DetectorConstructionMessenger* messenger;
+    G4double m_separation;
+    G4double m_st_x;
+    G4Material* m_st_mat;
+    G4String m_mat_name;
+//    DetectorConstructionMessenger* messenger;
     
     // Logical volumes
     //
-    G4LogicalVolume* expHall_log;
-    G4LogicalVolume* scint1_log;
-    G4LogicalVolume* scint2_log;
-    G4LogicalVolume* st_log;
+    G4LogicalVolume* m_expHall_log;
+    G4LogicalVolume* m_scint1_log;
+    G4LogicalVolume* m_scint2_log;
+    G4LogicalVolume* m_st_log;
     
     // Physical volumes
     //
-    G4VPhysicalVolume* expHall_phys;
-    G4VPhysicalVolume* scint1_phys;
-    G4VPhysicalVolume* scint2_phys;
-    G4VPhysicalVolume* st_phys;
+    G4VPhysicalVolume* m_expHall_phys;
+    G4VPhysicalVolume* m_scint1_phys;
+    G4VPhysicalVolume* m_scint2_phys;
+    G4VPhysicalVolume* m_st_phys;
 };
 
 #endif

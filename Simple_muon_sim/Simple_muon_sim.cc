@@ -51,19 +51,18 @@
 #include "G4UIExecutive.hh"
 #endif
 
+// if args are incorrect (or the help message is requested) check_args exits
+void check_args(int argc,char** argv);
 
 int main(int argc,char** argv) {
     
-    if (argc<3) {
-        G4cout << "usage: " << argv[0] << " <out.root> [vis.mac]"<<G4endl;
-        if (argc == 2){
-            G4cout << "Received argument: "<< argv[1] << G4endl;
-        }
-        exit(1);
-    }
-    G4bool batch_mode = (argc==3);
-    G4String out_root_name = G4String(argv[1]);
-    G4String macro_name = batch_mode ? G4String(argv[2]) : G4String("");
+    check_args(argc,argv);
+    
+    G4double separation = atof(argv[1]);
+    G4double st_x = atof(argv[2]);
+    G4String st_mat = G4String(argv[3]);
+    G4int n_particles = atoi(argv[4]);
+    G4String out_root_name = G4String(argv[5]);
     
     // Construct the default run manager
     //
@@ -71,7 +70,8 @@ int main(int argc,char** argv) {
     
     // set mandatory initialization classes
     //
-    G4VUserDetectorConstruction* detector = new DetectorConstruction;
+    G4VUserDetectorConstruction* detector
+                = new DetectorConstruction(separation, st_x,st_mat);
     runManager->SetUserInitialization(detector);
     //
     PhysicsList* physics = new PhysicsList;
@@ -95,29 +95,30 @@ int main(int argc,char** argv) {
     // Initialize G4 kernel
     //
     runManager->Initialize();
+    runManager->BeamOn(n_particles);
     
-#ifdef G4VIS_USE
-    G4VisManager* visManager = new G4VisExecutive;
-    visManager->Initialize();
-#endif
-
-    //get the pointer to the User Interface manager
-    G4UImanager* UImanager = G4UImanager::GetUIpointer();
-    
-    if (batch_mode) {
-        G4String command  = "/control/execute ";
-        G4String filename = macro_name;
-        UImanager->ApplyCommand(command+filename);
-    } else {        // interactive mode : define UI session
-#ifdef G4UI_USE
-        G4UIExecutive * ui = new G4UIExecutive(argc,argv);
-    #ifdef G4VIS_USE
-        UImanager->ApplyCommand("/control/execute vis.mac");
-    #endif
-        ui->SessionStart();
-        delete ui;
-#endif
-    }
+//#ifdef G4VIS_USE
+//    G4VisManager* visManager = new G4VisExecutive;
+//    visManager->Initialize();
+//#endif
+//
+//    //get the pointer to the User Interface manager
+//    G4UImanager* UImanager = G4UImanager::GetUIpointer();
+//    
+//    if (batch_mode) {
+//        G4String command  = "/control/execute ";
+//        G4String filename = macro_name;
+//        UImanager->ApplyCommand(command+filename);
+//    } else {        // interactive mode : define UI session
+//#ifdef G4UI_USE
+//        G4UIExecutive * ui = new G4UIExecutive(argc,argv);
+//    #ifdef G4VIS_USE
+//        UImanager->ApplyCommand("/control/execute vis.mac");
+//    #endif
+//        ui->SessionStart();
+//        delete ui;
+//#endif
+//    }
 
     // Job termination
     //
@@ -126,9 +127,9 @@ int main(int argc,char** argv) {
     //                 be deleted in the main() program !
     //
     
-#ifdef G4VIS_USE
-    delete visManager;
-#endif
+//#ifdef G4VIS_USE
+//    delete visManager;
+//#endif
     delete root;
     delete runManager;
     
@@ -136,3 +137,33 @@ int main(int argc,char** argv) {
 }
 
 
+void check_args(int argc,char** argv) {
+    if (argc == 2 && G4String(argv[1]) == G4String("-h")) {
+        G4cout << "usage: Simple_muon_sim <counter separation> "
+            << "<target_thickness> <target_material> "
+            << "<n_initial_particles> <out_root_file> "
+            <<G4endl<<G4endl;
+        G4cout <<"<counter separation>: distance between counters in mm; must "
+            << "be larger than target thickness"
+            <<G4endl;
+        G4cout <<"<target_thickness> in mm"
+            <<G4endl;
+        G4cout <<"<target_material> from the Geant4 NIST database (e.g. G4_AIR)"
+            <<G4endl;
+        G4cout <<"<n_initial_particles> number of events to generate"
+            <<G4endl;
+        G4cout <<"<out_root_file> where to save the output "
+            <<G4endl;
+        exit(0);
+    } else if (argc!=6) {
+        G4cout << "usage: Simple_muon_sim "
+            << "<counter separation> "
+            << "<target_thickness> "
+            << "<target_material> "
+            << "<n_intitial_particles> "
+            << "<out file> "
+        <<G4endl;
+        G4cout << "For more information use `Simple_muon_sim -h`"<<G4endl;
+        exit(1);
+    }  
+}
