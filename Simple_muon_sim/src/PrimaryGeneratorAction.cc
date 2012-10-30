@@ -41,7 +41,8 @@ PrimaryGeneratorAction::PrimaryGeneratorAction() {
     G4int n_particle = 1;
     G4ParticleGun* fParticleGun = new G4ParticleGun(n_particle);
     G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-    G4String particleName("mu+");
+    // possibly have option to mix mu+ & mu- but _need_ mu- to stop on Cu
+    G4String particleName("mu-");
     G4ParticleDefinition* particle = particleTable->FindParticle(particleName);
     fParticleGun->SetParticleDefinition(particle);
     fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1.,0.,0.));
