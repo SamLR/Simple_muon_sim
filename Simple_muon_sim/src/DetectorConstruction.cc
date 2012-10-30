@@ -51,7 +51,8 @@ DetectorConstruction::DetectorConstruction(G4double separation, G4double st_x, G
     m_expHall_log(0),  m_scint1_log(0),  m_scint2_log(0), m_st_log(0),
     m_expHall_phys(0), m_scint1_phys(0), m_scint2_phys(0), m_st_phys(0)
 {
-    if(separation < st_x) {
+    if((separation + std::numeric_limits<G4double>::epsilon()) < st_x) {
+        // if separation + smallest double value < target thickness
         G4cerr << "Separation of counters must be greater than the target thickness"<< G4endl;
         exit(1);
     }
