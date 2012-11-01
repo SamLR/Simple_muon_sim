@@ -73,14 +73,9 @@
 		5D2F2293163EDC7C00958E16 /* libCore.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libCore.so; path = /Applications/ROOT/root/lib/libCore.so; sourceTree = "<absolute>"; };
 		5D2F2294163EDC7C00958E16 /* libRIO.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRIO.so; path = /Applications/ROOT/root/lib/libRIO.so; sourceTree = "<absolute>"; };
 		5D2F2295163EDC7C00958E16 /* libTree.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libTree.so; path = /Applications/ROOT/root/lib/libTree.so; sourceTree = "<absolute>"; };
-		5D2F22A3163F0F4600958E16 /* run.mac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = run.mac; sourceTree = "<group>"; };
-		5D2F22AD163F3A0700958E16 /* air_run.mac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = air_run.mac; sourceTree = "<group>"; };
-		5D2F22B41640103600958E16 /* copper_run.mac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = copper_run.mac; sourceTree = "<group>"; };
 		5DC9BD59163AD1BF00FD09EC /* Simple_muon_sim */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Simple_muon_sim; sourceTree = BUILT_PRODUCTS_DIR; };
-		5DC9BD5F163AD1BF00FD09EC /* Simple_muon_sim.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Simple_muon_sim.1; sourceTree = "<group>"; };
 		5DC9BD8B163AD77100FD09EC /* DetectorConstruction.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DetectorConstruction.hh; sourceTree = "<group>"; };
 		5DC9BD8D163AD77100FD09EC /* PrimaryGeneratorAction.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PrimaryGeneratorAction.hh; sourceTree = "<group>"; };
-		5DC9BD8E163AD77100FD09EC /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		5DC9BD8F163AD77100FD09EC /* Simple_muon_sim.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Simple_muon_sim.cc; sourceTree = "<group>"; };
 		5DD44A98163DBB3D0097D467 /* libG4analysis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libG4analysis.dylib; path = /usr/local/lib/libG4analysis.dylib; sourceTree = "<absolute>"; };
 		5DD44A99163DBB3D0097D467 /* libG4clhep.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libG4clhep.dylib; path = /usr/local/lib/libG4clhep.dylib; sourceTree = "<absolute>"; };
@@ -188,13 +183,8 @@
 			isa = PBXGroup;
 			children = (
 				5DC9BD8A163AD77100FD09EC /* include */,
-				5DC9BD8E163AD77100FD09EC /* README */,
 				5DC9BD8F163AD77100FD09EC /* Simple_muon_sim.cc */,
-				5D2F22A3163F0F4600958E16 /* run.mac */,
-				5D2F22B41640103600958E16 /* copper_run.mac */,
-				5D2F22AD163F3A0700958E16 /* air_run.mac */,
 				5DC9BD90163AD77100FD09EC /* src */,
-				5DC9BD5F163AD1BF00FD09EC /* Simple_muon_sim.1 */,
 			);
 			path = Simple_muon_sim;
 			sourceTree = "<group>";
