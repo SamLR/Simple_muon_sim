@@ -37,12 +37,13 @@
 #include "Randomize.hh"
 #include "globals.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction() {
+PrimaryGeneratorAction::PrimaryGeneratorAction(G4String particle_name)
+{
     G4int n_particle = 1;
     G4ParticleGun* fParticleGun = new G4ParticleGun(n_particle);
     G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
     // possibly have option to mix mu+ & mu- but _need_ mu- to stop on Cu
-    G4String particleName("mu-");
+    G4String particleName(particle_name);
     G4ParticleDefinition* particle = particleTable->FindParticle(particleName);
     fParticleGun->SetParticleDefinition(particle);
     fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1.,0.,0.));
@@ -51,11 +52,13 @@ PrimaryGeneratorAction::PrimaryGeneratorAction() {
     particleGun = fParticleGun;
 }
 
-PrimaryGeneratorAction::~PrimaryGeneratorAction() {
+PrimaryGeneratorAction::~PrimaryGeneratorAction()
+{
     delete particleGun;
 }
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+{
     G4double momentum = G4RandGauss::shoot(45*MeV, 10*MeV);
     particleGun->SetParticleMomentum(momentum);
     particleGun->GeneratePrimaryVertex(anEvent);

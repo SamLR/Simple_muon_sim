@@ -62,7 +62,8 @@ int main(int argc,char** argv) {
     G4double st_x = atof(argv[2]);
     G4String st_mat = G4String(argv[3]);
     G4int n_particles = atoi(argv[4]);
-    G4String out_root_name = G4String(argv[5]);
+    G4String particle_type = G4String(argv[5]);
+    G4String out_root_name = G4String(argv[6]);
     
     // Construct the default run manager
     //
@@ -80,7 +81,7 @@ int main(int argc,char** argv) {
     
     // set mandatory user action class
     //
-    PrimaryGeneratorAction* gen_action = new PrimaryGeneratorAction;
+    PrimaryGeneratorAction* gen_action = new PrimaryGeneratorAction(particle_type);
     runManager->SetUserAction(gen_action);
     
     
@@ -138,10 +139,10 @@ int main(int argc,char** argv) {
 
 
 void check_args(int argc,char** argv) {
-    if (argc == 2 && G4String(argv[1]) == G4String("-h")) {
+    if (argc > 1 && G4String(argv[1]) == G4String("-h")) {
         G4cout << "usage: Simple_muon_sim <counter separation> "
             << "<target_thickness> <target_material> "
-            << "<n_initial_particles> <out_root_file> "
+            << "<n_initial_particles> <initial_particle_type> <out_root_file> "
             <<G4endl<<G4endl;
         G4cout <<"<counter separation>: distance between counters in mm; in "
             << "addition to target thickness"
@@ -152,15 +153,18 @@ void check_args(int argc,char** argv) {
             <<G4endl;
         G4cout <<"<n_initial_particles> number of events to generate"
             <<G4endl;
+        G4cout <<"<initial_particle_type> including charge (e.g. mu+)"
+            <<G4endl;
         G4cout <<"<out_root_file> where to save the output "
             <<G4endl;
         exit(0);
-    } else if (argc!=6) {
+    } else if (argc!=7) {
         G4cout << "usage: Simple_muon_sim "
             << "<counter separation> "
             << "<target_thickness> "
             << "<target_material> "
             << "<n_intitial_particles> "
+            << "<initial_particle_type> "
             << "<out file> "
         <<G4endl;
         G4cout << "For more information use `Simple_muon_sim -h`"<<G4endl;

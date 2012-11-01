@@ -32,19 +32,20 @@
 #define PrimaryGeneratorAction_h 1
 
 #include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4String.hh"
 
 class G4ParticleGun;
 class G4Event;
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
-  public:
-    PrimaryGeneratorAction();
+public:
+    PrimaryGeneratorAction(G4String particle_name);
     ~PrimaryGeneratorAction();
-
-  public:
+    
     void GeneratePrimaries(G4Event* anEvent);
-
-  private:
+    
+private:
+    PrimaryGeneratorAction();
     G4ParticleGun* particleGun;
 };
 
