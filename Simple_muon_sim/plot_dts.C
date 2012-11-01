@@ -1,4 +1,4 @@
-void dirty2(){
+void plot_dts(){
     
     const int n_files = 6;
     TString file_roots [3] = 
