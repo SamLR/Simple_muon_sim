@@ -1,5 +1,0 @@
-/Simple_muon_sim/targetX 1 mm
-/Simple_muon_sim/targetMat G4_Galactic
-/Simple_muon_sim/update
-/run/initialize
-/run/beamOn 100000
