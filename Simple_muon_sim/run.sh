@@ -15,19 +15,20 @@ export G4REALSURFACEDATA=/usr/local/share/Geant4-9.5.0/data/RealSurface1.0
 exe="../build/Release/Simple_muon_sim"
 log="> /dev/null"
 n_particles=1000000
-separation=6
+particle_type="mu-"
+separation=0
 # st_x=1 
-st_mat=( "3 Galactic" "3 AIR" "1 Cu" ) # will prepend the required 'G4_'
-file_name="out.root" # will prepend the other info
+st_mat=( "6 Galactic" "6 AIR" "1 Cu" ) # will prepend the required 'G4_'
+file_suffix="out.root" # will prepend the other info
 output_dir="root/"
 
 for mat in "${st_mat[@]}";
 do
     # echo ${mat/\ /_} substitue the ' ' between st-x & st-mat for a '_'
     # also used to sub ' G4_' for the actual command
-    file=$output_dir"sep_"$separation"mm_st-x_"${mat/\ /mm_st-mat_}"_n-particles_"$n_particles"_"$file_name
+    file=$output_dir"sep_"$separation"mm_st-x_"${mat/\ /mm_st-mat_}"_n-particles_"$n_particles"_"$particle_type"_"$file_suffix
     echo $file
-    cmd="$exe $separation ${mat/\ / G4_} $n_particles $file $log"
+    cmd="$exe $separation ${mat/\ / G4_} $n_particles $particle_type $file $log"
     echo $cmd
     eval $cmd
 done;
