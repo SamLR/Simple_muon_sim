@@ -1,53 +1,79 @@
 void dirty2(){
-    TFile* in_file = new TFile("root/sep_6mm_st-x_3mm_st-mat_Galactic_n-particles_1000000_out.root", "READ");
-    // TFile* in_file = new TFile("root/sep_6mm_st-x_1mm_st-mat_Cu_n-particles_1000000_out.root", "READ");
-    // TFile* in_file = new TFile("root/sep_6mm_st-x_3mm_st-mat_AIR_n-particles_1000000_out.root", "READ");
-    int nhit;
-    int pdgid[500];
-    int counter[500];
-    int parentid[500];
-    int trkid[500];
-    double tof[500];
     
-    TTree* tree = (TTree*) in_file->Get("t");
-    tree->SetBranchAddress("tof",&tof);
-    tree->SetBranchAddress("nhit",&nhit);
-    tree->SetBranchAddress("counter",&counter);
-    tree->SetBranchAddress("parentid",&parentid);
-    tree->SetBranchAddress("trkid",&trkid);
-    tree->SetBranchAddress("pdgid",&pdgid);
+    const int n_files = 6;
+    TString file_roots [3] = 
+            {"1mm_st-mat_Cu",
+             "6mm_st-mat_AIR",
+             "6mm_st-mat_Galactic"};
     
-    const int n_entries = tree->GetEntries();
+    TString file_suffix_pos = "_n-particles_1000000_mu+_out.root";
+    TString file_suffix_neg = "_n-particles_1000000_mu-_out.root";
+    TString file_prefix = "root/sep_0mm_st-x_";
+    TString file_names [n_files];
+    for(int i = 0; i < n_files/2; ++i) {
+        file_names[2*i]   = file_prefix + file_roots[i] + file_suffix_pos;
+        file_names[2*i+1] = file_prefix + file_roots[i] + file_suffix_neg;
+    }                      
+    TH1D* hists [n_files];
+    const int i_charges [n_files] = {-1,1,-1,1,-1,1};
     
-    TH1D* hist_raw = new TH1D("dt","dt",20000,0,20000);
-    TH1D* hist_rebin = new TH1D("dt_rebin","dt_rebin",100,50,20050);
-    for(int entry = 0; entry < n_entries; ++entry) {
-        tree->GetEntry(entry);
-        if(nhit<2) continue;
-        int mu_id = -1;
-        double t0=-1.0;
-        for(int hit = 0; hit < nhit; ++hit) {
-            bool mu_at_1 = (counter[hit]==2) && (pdgid[hit]==13);
-            bool e_at_2  = (pdgid[hit]==11) && parentid[hit]==mu_id; // t0 to confirm we've seen a mu
-            if (mu_at_1) {
-                t0 = tof[hit];
-                mu_id = trkid[hit];
-            } else if (e_at_2) {
-                const double dt = tof[hit]-t0;
-                hist_raw->Fill(dt);
-                hist_rebin->Fill(dt);   
+    for (int file = 0; file<n_files; ++file){
+        TFile* in_file = new TFile(file_names[file], "READ");
+        TString hist_name = file_roots[static_cast<int>(file/2)];
+        hist_name += (file%2==0) ? "+" : "-";
+        cout << file_names[file] <<" "<< hist_name << endl;  
+        hists[file] = new TH1D(hist_name, hist_name, 100, 50, 20050);
+        int nhit;
+        int pdgid[500];
+        int counter[500];
+        int parentid[500];
+        int trkid[500];
+        double tof[500];
+        
+        TTree* tree = (TTree*) in_file->Get("t");
+        tree->SetBranchAddress("tof",&tof);
+        tree->SetBranchAddress("nhit",&nhit);
+        tree->SetBranchAddress("counter",&counter);
+        tree->SetBranchAddress("parentid",&parentid);
+        tree->SetBranchAddress("trkid",&trkid);
+        tree->SetBranchAddress("pdgid",&pdgid);
+        
+        const int n_entries = tree->GetEntries();
+        
+        for(int entry = 0; entry < n_entries; ++entry) {
+            tree->GetEntry(entry);
+            if(nhit<2) continue;
+            int mu_id = -1;
+            double t0=-1.0;
+            for(int hit = 0; hit < nhit; ++hit) {
+                bool mu_at_1 = (counter[hit]==2) && (pdgid[hit]==i_charges[file]*13);
+                bool e_at_2  = (pdgid[hit]==i_charges[file]*11) && parentid[hit]==mu_id; // t0 to confirm we've seen a mu
+                if (mu_at_1) {
+                    t0 = tof[hit];
+                    mu_id = trkid[hit];
+                } else if (e_at_2) {
+                    const double dt = tof[hit]-t0;
+                    hists[file]->Fill(dt);
+                }
             }
         }
+        // in_file->Close();
     }
-    TCanvas* can_raw = new TCanvas("Raw", "Raw");
-    hist_raw->Draw();
-
-    TCanvas* can_rebin = new TCanvas("Rebin", "Rebin");
-    TF1* exp_fit = new TF1("fit","[0]*exp(-x/[1])",50,20000);
-    exp_fit->SetParameter(0, hist_rebin->GetMaximum());
-    exp_fit->SetParameter(1,1500.0);
-    
-    hist_rebin->Fit(exp_fit);
     gStyle->SetOptFit(true);
-    hist_rebin->Draw();
+    TCanvas* can = new TCanvas("Rebin", "Rebin");
+    can->Divide(3,2);   
+    TF1* fits[n_files];
+    // hists[0]->Draw();
+    for(int file = 0; file < n_files; ++file) {
+        can->cd(file+1);
+        TString name = "fit";
+        name += file;
+        fits[file] = new TF1(name,"[0]*exp(-x/[1])",50,20050);
+        cout << "here I am" << endl;
+        fits[file]->SetParameter(0, hists[file]->GetMaximum());
+        fits[file]->SetParameter(1,1500.0);
+        hists[file]->Fit(fits[file]);
+        hists[file]->Draw();
+
+    }
 }
