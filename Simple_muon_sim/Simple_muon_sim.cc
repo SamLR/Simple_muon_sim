@@ -81,7 +81,7 @@ int main(int argc,char** argv) {
     
     // set mandatory user action class
     //
-    PrimaryGeneratorAction* gen_action = new PrimaryGeneratorAction(particle_type);
+    PrimaryGeneratorAction* gen_action = new PrimaryGeneratorAction(particle_type,separation+st_x);
     runManager->SetUserAction(gen_action);
     
     
@@ -98,39 +98,6 @@ int main(int argc,char** argv) {
     runManager->Initialize();
     runManager->BeamOn(n_particles);
     
-//#ifdef G4VIS_USE
-//    G4VisManager* visManager = new G4VisExecutive;
-//    visManager->Initialize();
-//#endif
-//
-//    //get the pointer to the User Interface manager
-//    G4UImanager* UImanager = G4UImanager::GetUIpointer();
-//    
-//    if (batch_mode) {
-//        G4String command  = "/control/execute ";
-//        G4String filename = macro_name;
-//        UImanager->ApplyCommand(command+filename);
-//    } else {        // interactive mode : define UI session
-//#ifdef G4UI_USE
-//        G4UIExecutive * ui = new G4UIExecutive(argc,argv);
-//    #ifdef G4VIS_USE
-//        UImanager->ApplyCommand("/control/execute vis.mac");
-//    #endif
-//        ui->SessionStart();
-//        delete ui;
-//#endif
-//    }
-
-    // Job termination
-    //
-    // Free the store: user actions, physics_list and detector_description are
-    //                 owned and deleted by the run manager, so they should not
-    //                 be deleted in the main() program !
-    //
-    
-//#ifdef G4VIS_USE
-//    delete visManager;
-//#endif
     delete root;
     delete runManager;
     

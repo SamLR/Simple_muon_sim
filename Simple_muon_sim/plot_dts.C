@@ -13,8 +13,10 @@ void plot_dts(){
     const int n_files = 6;
     TString file_roots [3] = 
             {"1mm_st-mat_Cu",
-             "6mm_st-mat_AIR",
-             "6mm_st-mat_Galactic"};
+             "300mm_st-mat_AIR",
+             "300mm_st-mat_Galactic"};                         // 
+              // "6mm_st-mat_AIR",
+              // "6mm_st-mat_Galactic"};
     
     TString file_suffix_pos = "_n-particles_1000000_mu+_out.root";
     TString file_suffix_neg = "_n-particles_1000000_mu-_out.root";

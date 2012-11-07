@@ -18,7 +18,8 @@ n_particles=1000000
 particle_type="mu-"
 separation=0
 # st_x=1 
-st_mat=( "6 Galactic" "6 AIR" "1 Cu" ) # will prepend the required 'G4_'
+# st_mat=( "6 Galactic" "6 AIR" "1 Cu" ) # will prepend the required 'G4_'
+st_mat=( "300 Galactic" "300 AIR" "1 Cu" ) # will prepend the required 'G4_'
 file_suffix="out.root" # will prepend the other info
 output_dir="root/"
 

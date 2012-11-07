@@ -39,7 +39,7 @@ class G4Event;
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
-    PrimaryGeneratorAction(G4String particle_name);
+    PrimaryGeneratorAction(G4String particle_name, G4double counter_separation);
     ~PrimaryGeneratorAction();
     
     void GeneratePrimaries(G4Event* anEvent);

@@ -37,7 +37,7 @@
 #include "Randomize.hh"
 #include "globals.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(G4String particle_name)
+PrimaryGeneratorAction::PrimaryGeneratorAction(G4String particle_name, G4double counter_separation)
 {
     G4int n_particle = 1;
     G4ParticleGun* fParticleGun = new G4ParticleGun(n_particle);
@@ -48,7 +48,8 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(G4String particle_name)
     fParticleGun->SetParticleDefinition(particle);
     fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1.,0.,0.));
     fParticleGun->SetParticleEnergy(45.*MeV);
-    fParticleGun->SetParticlePosition(G4ThreeVector(-20*mm,0.*cm,0.*cm));
+    G4double xpos = -(counter_separation/2 + 15) * mm; // counters are 10mm
+    fParticleGun->SetParticlePosition(G4ThreeVector(xpos,0.*cm,0.*cm));
     particleGun = fParticleGun;
 }
 
