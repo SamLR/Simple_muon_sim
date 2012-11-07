@@ -1,3 +1,13 @@
+#include "TROOT.h"
+#include "TString.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TH1D.h"
+#include "TCanvas.h"
+#include "TF1.h"
+#include "TStyle.h"
+
+
 void plot_dts(){
     
     const int n_files = 6;
