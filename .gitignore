@@ -2,6 +2,7 @@ build/
 project.xcworkspace/
 xcuserdata
 *.root
-dts_for_muons_in_copper_air_and_galactic.eps
+*.eps
 plot_dts_C.d
 plot_dts_C.so
+

@@ -88,4 +88,6 @@ void plot_dts(){
         hists[file]->Draw();
 
     }
+    can->SaveAs("Fits.svg");
+    can->SaveAs("Fits.eps");
 }
